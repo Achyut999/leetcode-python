@@ -1,8 +1,16 @@
-import numpy as np 
+from typing import List
+
 class Solution:
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
-        s = nums1 + nums2
-        s.sort()
-        n = np.size(s)
-        i = s[(n/2)]
-        print(i)
+        merged = nums1 + nums2
+        merged.sort()
+        n = len(merged)
+        
+        if n % 2 == 1:
+            # Odd length: middle element
+            return float(merged[n // 2])
+        else:
+            # Even length: average of two middle elements
+            mid1 = merged[n // 2 - 1]
+            mid2 = merged[n // 2]
+            return (mid1 + mid2) / 2
