@@ -1,0 +1,25 @@
+import heapq
+def getSkyline(buildings: list[list[int]]) -> list[list[int]]:
+    events = []
+    for l, r, h in buildings:
+        events.append((l, -h, r))
+        events.append((r, 0, 0))
+    events.sort()
+    heap = [0]
+    result = []
+    i = 0
+    while i < len(events):
+        x = events[i][0]
+        while i < len(events) and events[i][0] == x:
+            if events[i][1] < 0:
+                heapq.heappush(heap, events[i][1])
+            else:
+                # end, but lazy remove
+                pass
+            i += 1
+        while heap and -heap[0] <= x:  # invalid ends
+            heapq.heappop(heap)
+        curr_h = -heap[0] if heap else 0
+        if not result or result[-1][1] != curr_h:
+            result.append([x, curr_h])
+    return result
