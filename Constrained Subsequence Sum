@@ -1,0 +1,14 @@
+from collections import deque
+def constrainedSubsetSum(nums: list[int], k: int) -> int:
+    deque_max = deque()
+    dp = [0] * len(nums)
+    max_sum = nums[0]
+    for i in range(len(nums)):
+        while deque_max and deque_max[0] < i - k:
+            deque_max.popleft()
+        dp[i] = nums[i] + (dp[deque_max[0]] if deque_max else 0)
+        max_sum = max(max_sum, dp[i])
+        while deque_max and dp[deque_max[-1]] < dp[i]:
+            deque_max.pop()
+        deque_max.append(i)
+    return max_sum
