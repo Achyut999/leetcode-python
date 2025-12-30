@@ -1,0 +1,33 @@
+from collections import defaultdict, OrderedDict
+class LFUCache:
+    def __init__(self, capacity: int):
+        self.cap = capacity
+        self.freq = defaultdict(OrderedDict)
+        self.min_freq = 0
+        self.key_freq = {}
+
+    def get(self, key: int) -> int:
+        if key not in self.key_freq:
+            return -1
+        freq = self.key_freq[key]
+        val = self.freq[freq].pop(key)
+        self.key_freq[key] = freq + 1
+        self.freq[freq + 1][key] = val
+        if not self.freq[self.min_freq]:
+            self.min_freq += 1
+        return val
+
+    def put(self, key: int, value: int) -> None:
+        if self.cap <= 0:
+            return
+        if key in self.key_freq:
+            self.freq[self.key_freq[key]].pop(key)
+            self.get(key)  # update freq
+            self.freq[self.key_freq[key]][key] = value
+            return
+        if len(self.key_freq) >= self.cap:
+            k, v = self.freq[self.min_freq].popitem(last=False)
+            del self.key_freq[k]
+        self.key_freq[key] = 1
+        self.freq[1][key] = value
+        self.min_freq = 1
