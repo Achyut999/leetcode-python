@@ -1,0 +1,12 @@
+def profitableSchemes(n: int, minProfit: int, group: list[int], profit: list[int]) -> int:
+    MOD = 10**9 + 7
+    m = len(group)
+    dp = [[[0] for _ in range(minProfit + 1)] for _ in range(n + 1)]
+    dp[0][0] = 1
+    for i in range(m):
+        g, p = group[i], profit[i]
+        for j in range(n, g - 1, -1):
+            for k in range(minProfit, -1, -1):
+                new_p = min(k + p, minProfit)
+                dp[j][new_p] = (dp[j][new_p] + dp[j - g][k]) % MOD
+    return sum(dp[j][minProfit] for j in range(n + 1)) % MOD
