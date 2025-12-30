@@ -1,0 +1,19 @@
+def countSmaller(nums: list[int]) -> list[int]:
+    ranks = {val: i for i, val in enumerate(sorted(set(nums)))}
+    tree = [0] * (len(ranks) + 1)
+    def update(idx):
+        while idx < len(tree):
+            tree[idx] += 1
+            idx += idx & -idx
+    def query(idx):
+        res = 0
+        while idx > 0:
+            res += tree[idx]
+            idx -= idx & -idx
+        return res
+    result = []
+    for num in reversed(nums):
+        rank = ranks[num] + 1
+        result.append(query(rank - 1))
+        update(rank)
+    return result[::-1]
